@@ -7,7 +7,7 @@ __RetaiL__ is a library aimed at improving experimentation in a grocery store co
 We design RetaiL around two main components: 
 
  * [Item Generation](https://github.com/samijullien/airlab-retail/tree/master/retail/item_generation) contains the item Generation, scripted in R.
- * [Store environment](https://github.com/schelterlabs/jenga/tree/master/retail/retail.py) 
+ * [Store environment](https://github.com/samijullien/airlab-retail/tree/master/retail/retail.py) 
 
 We additionally provide three usage examples of RetaiL:
 
