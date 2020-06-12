@@ -1,0 +1,6 @@
+numpy
+pandas==0.25.1
+jupyter==1.0.0
+pytorch==1.4.0
+#matplotlib
+#seaborn
