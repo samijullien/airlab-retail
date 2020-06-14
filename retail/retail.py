@@ -16,12 +16,13 @@ import os.path
 
 class Assortment():
     def __init__(self, size, seed=None):
-        args = [str(size), str(seed), 'chdir = T']
-        path_to_rscript = os.path.join(os.path.dirname(os.path.abspath(__file__)), "item_generation/assortmentGen.R")
-        subprocess.call(['Rscript', path_to_rscript, "--args"] + args, universal_newlines=True)
+        file_path = os.path.dirname(os.path.abspath(__file__))
+        args = [str(size), str(seed), file_path]
+        path_to_rscript = os.path.join(file_path, "item_generation/assortmentGen.R")
+        subprocess.call(['Rscript', path_to_rscript] + args, universal_newlines=True)
                         
         #os.system("Rscript item_generation\\assortmentGen.R " + str(size) + " " + str(seed))
-        df = pd.read_csv('item_generation/assortment.csv')
+        df = pd.read_csv(os.path.join(file_path,'item_generation/assortment.csv'))
         self.seed=seed
         self.selling_price = torch.tensor(df.Price)
         self.cost = torch.tensor(df.Cost)
@@ -260,21 +261,6 @@ class StoreEnv(Env):
         return self._horizon
 
 
-
-
-
-
-# TODO :
-# Add a facing metric -> Availability?
-# Will need to redesign customer curve during the day
-# Assuming we go for a double gaussian, do we need to update some kind of n forecast during the day?
-# Start fillign sections and add number of pages
-
-
-# Add utility functionS and possibility to choose when creating the evt
-#Check creation of utility classes with list as args
-# # -----
-# Multivariate normal with 0 covariance to start
 
 def transportation_cost(order, transport_size = 300000, transport_cost = 250.):
     volume = units*self.assortment.dims.t().sum(0)
