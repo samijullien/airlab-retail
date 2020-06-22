@@ -11,7 +11,7 @@ We design RetaiL around two main components:
 
 We additionally provide three usage examples of RetaiL:
 
- * [Transporation cost impact on marginal ordering cost](Transportation_cost.ipynb.ipynb)
+ * [Transporation cost impact on marginal ordering cost](Transportation_cost.ipynb)
  * [Daily customer distribution impact on ordering policy performance](Intraday_dist_impact.ipynb)
  * [Risk assesment of an ordering policy](cvar_computation.ipynb)
 
