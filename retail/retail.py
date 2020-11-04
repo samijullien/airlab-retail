@@ -19,7 +19,7 @@ import os.path
 
 class Assortment:
 
-    def __init__(self, size, seed=None):
+    def __init__(self, size, freshness=1, seed=None):
         file_path = os.path.dirname(os.path.abspath(__file__))
         args = [str(size), str(seed), file_path]
         path_to_rscript = os.path.join(file_path,
@@ -38,8 +38,8 @@ class Assortment:
         # clamp base demand as some outliers in the data generation might ruin the purchase probability
 
         self.base_demand = torch.tensor(df.Base_Demand).clamp(0, 1000)
-        self.shelf_lives = torch.tensor(df.Shelf_life,
-                dtype=torch.float32)
+        self.shelf_lives = torch.round(torch.tensor(df.Shelf_life,
+                dtype=torch.float32)/freshness)
         self.dims = torch.tensor(df.iloc[:, 1:4].values)
         self.characs = torch.stack((self.selling_price, self.cost,
                                    self.shelf_lives)).t()
@@ -129,6 +129,7 @@ class StoreEnv(Env):
         bucket_cov=torch.eye(4) / 100,
         forecastBias=0.0,
         forecastVariance=0.0,
+        freshness=1,
         utility_function='homogeneous',
         utility_weights={'alpha': 1., 'beta': 1., 'gamma': 1.},
         characDim=4,
@@ -155,7 +156,7 @@ class StoreEnv(Env):
                 shape=(assortment_size, max_stock + characDim
                 + lead_time + lead_time_fast + 1))
         self._horizon = int(horizon)
-        self.assortment = Assortment(assortment_size, seed)
+        self.assortment = Assortment(assortment_size, freshness, seed)
         self._repeater = torch.stack((self.assortment.shelf_lives,
                 torch.zeros(self._assortment_size))).transpose(0,
                 1).reshape(-1).detach()
@@ -187,9 +188,11 @@ class StoreEnv(Env):
         elif utility_function == 'cobbdouglas':
             self.utility_function = \
                 CobbDouglas_Utility(**utility_weights)
-        else:
+        elif utility_function == 'homogeneous':
             self.utility_function = \
                 Homogeneous_Reward(**utility_weights)
+        else:
+            self.utility_function = utility_function
         self._updateEnv()
         for i in range(self._lead_time):
             self._addStock((self.forecast.squeeze()
