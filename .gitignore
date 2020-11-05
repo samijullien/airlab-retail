@@ -130,3 +130,9 @@ dmypy.json
 
 # MacOS artifacts
 .DS_Store
+
+# Visual Studio Code
+.vscode/
+
+# DB and assortment, etc.
+*.csv
