@@ -268,4 +268,4 @@ def update_output_order(n_clicks, n_customers, horizon, order):
     return(fig)
 
 if __name__ == '__main__':
-    app.run_server(host='127.0.0.1', debug=True)
+    app.run_server(host='0.0.0.0', debug=True)
