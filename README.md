@@ -27,10 +27,8 @@ RetaiL requires Python 3.6 or 3.7.
 	python3 -m venv env
 	# Activate the environment
 	source env/bin/activate
-	# Install the latest version of pip
-	pip3 install --upgrade pip
 	# Install the dependencies
-	pip install -r requirements.txt
+	python3 setup.py install
 
 ## Usage
 
