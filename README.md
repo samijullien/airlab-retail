@@ -37,3 +37,12 @@ RetaiL requires Python 3.6 or 3.7.
 Run server:
 
 	python3 app.py
+
+View the grocery store simulation in your web browser at <http://localhost:8050/>.
+
+## Development
+
+A development environment can be set up regardless of the developer's operating system by using Docker.
+
+	docker build . -t retail
+	docker run -ti --rm -p 8050:8050 retail
