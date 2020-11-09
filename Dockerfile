@@ -31,7 +31,7 @@ RUN wget -P /tmp \
     /tmp/copula_1.0-0.tar.gz
 
 # Install Python dependencies
-RUN python setup.py install
+RUN python setup.py develop
 
 # Run server
 EXPOSE 8050
