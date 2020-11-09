@@ -113,15 +113,15 @@ app.layout = html.Div(
                      ),
         dcc.Input(
             id="weight_waste", type="number", placeholder="Waste weight",
-            min=0, max=3, step=.01,
+            min=0, max=3, step=.01, value=0.5,
         ),
         dcc.Input(
             id="weight_sales", type="number", placeholder="Sales weight",
-            min=0, max=3, step=.01,
+            min=0, max=3, step=.01, value=0.5,
         ),
         dcc.Input(
             id="weight_availability", type="number", placeholder="Availability",
-            min=0, max=3, step=.01,
+            min=0, max=3, step=.01, value=0.5,
         ),
         html.Label('Custom utility'),
         dcc.Input(type='text', id='utility', placeholder="Contains a,w and s"),
