@@ -184,7 +184,7 @@ class StoreEnv(Env):
         if utility_function == 'linear':
             self.utility_function = Linear_Utility(**utility_weights)
         elif utility_function == 'loglinear':
-            self.utility_function = Linear_Utility(**utility_weights)
+            self.utility_function = LogLinear_Utility(**utility_weights)
         elif utility_function == 'cobbdouglas':
             self.utility_function = \
                 CobbDouglas_Utility(**utility_weights)
