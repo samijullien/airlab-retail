@@ -23,14 +23,14 @@ class Assortment:
         file_path = os.path.dirname(os.path.abspath(__file__))
         args = [str(size), str(seed), file_path]
         path_to_rscript = os.path.join(file_path,
-                'item_generation/assortmentGen.R')
+                                       'item_generation/assortmentGen.R')
         subprocess.call(['Rscript', path_to_rscript] + args,
                         universal_newlines=True)
 
         # os.system("Rscript item_generation\\assortmentGen.R " + str(size) + " " + str(seed))
 
         df = pd.read_csv(os.path.join(file_path,
-                         'item_generation/assortment.csv'))
+                                      'item_generation/assortment.csv'))
         self.seed = seed
         self.selling_price = torch.tensor(df.Price)
         self.cost = torch.tensor(df.Cost)
@@ -39,10 +39,10 @@ class Assortment:
 
         self.base_demand = torch.tensor(df.Base_Demand).clamp(0, 1000)
         self.shelf_lives = torch.round(torch.tensor(df.Shelf_life,
-                dtype=torch.float32)/freshness)
+                                                    dtype=torch.float32)/freshness)
         self.dims = torch.tensor(df.iloc[:, 1:4].values)
         self.characs = torch.stack((self.selling_price, self.cost,
-                                   self.shelf_lives)).t()
+                                    self.shelf_lives)).t()
 
     # Functions for further improvement
 
@@ -72,7 +72,7 @@ class Assortment:
 
 
 EnvInfo = namedtuple('EnvInfo', ['sales', 'availability', 'waste',
-                     'reward', 'traj_done'])
+                                 'reward', 'traj_done'])
 
 
 class RetailTrajInfo(TrajInfo):
@@ -93,7 +93,7 @@ class RetailTrajInfo(TrajInfo):
         done,
         agent_info,
         env_info,
-        ):
+    ):
         super().step(
             observation,
             action,
@@ -101,16 +101,16 @@ class RetailTrajInfo(TrajInfo):
             done,
             agent_info,
             env_info,
-            )
+        )
         self.AverageReward = self.Momentum * reward + (1
-                - self.Momentum) * self.AverageSales
+                                                       - self.Momentum) * self.AverageSales
         self.Sales = self.Momentum * getattr(env_info, 'sales', 0) + (1
-                - self.Momentum) * self.AverageSales
+                                                                      - self.Momentum) * self.AverageSales
         self.Availability = self.Momentum * getattr(env_info,
-                'availability', 0) + (1 - self.Momentum) \
+                                                    'availability', 0) + (1 - self.Momentum) \
             * self.Availability
         self.Waste = self.Momentum * getattr(env_info, 'waste', 0) + (1
-                - self.Momentum) * self.Waste
+                                                                      - self.Momentum) * self.Waste
 
 
 class StoreEnv(Env):
@@ -118,7 +118,7 @@ class StoreEnv(Env):
     def __init__(
         self,
         assortment_size=1000,  # number of items to train
-        max_stock=1000, # Size of maximum stock
+        max_stock=1000,  # Size of maximum stock
         clip_reward=False,
         episodic_lives=True,
         repeat_action_probability=0.0,
@@ -133,33 +133,33 @@ class StoreEnv(Env):
         utility_function='homogeneous',
         utility_weights={'alpha': 1., 'beta': 1., 'gamma': 1.},
         characDim=4,
-        lead_time=1, # Defines how quickly the orders goes through the buffer - also impacts the relevance of the observation
+        lead_time=1,  # Defines how quickly the orders goes through the buffer - also impacts the relevance of the observation
         lead_time_fast=0,
         symmetric_action_space=False,
-        ):
+    ):
         save__init__args(locals(), underscore=True)
 
         # Spaces
 
         if symmetric_action_space:
             self._action_space = FloatBox(low=-max_stock / 2,
-                    high=max_stock / 2, shape=[assortment_size])
+                                          high=max_stock / 2, shape=[assortment_size])
         else:
             self._action_space = IntBox(low=0, high=max_stock,
-                    shape=[assortment_size])
+                                        shape=[assortment_size])
         self.stock = torch.zeros(assortment_size, max_stock,
                                  requires_grad=False)
 
         # correct high with max shelf life
 
         self._observation_space = FloatBox(low=0, high=1000,
-                shape=(assortment_size, max_stock + characDim
-                + lead_time + lead_time_fast + 1))
+                                           shape=(assortment_size, max_stock + characDim
+                                                  + lead_time + lead_time_fast + 1))
         self._horizon = int(horizon)
         self.assortment = Assortment(assortment_size, freshness, seed)
         self._repeater = torch.stack((self.assortment.shelf_lives,
-                torch.zeros(self._assortment_size))).transpose(0,
-                1).reshape(-1).detach()
+                                      torch.zeros(self._assortment_size))).transpose(0,
+                                                                                     1).reshape(-1).detach()
         self.forecast = torch.zeros(assortment_size, 1)  # DAH forecast.
         self._step_counter = 0
 
@@ -167,7 +167,7 @@ class StoreEnv(Env):
 
         self._customers = \
             d.multivariate_normal.MultivariateNormal(bucket_customers,
-                bucket_cov)
+                                                     bucket_cov)
         self.assortment.base_demand = \
             self.assortment.base_demand.detach() \
             / bucket_customers.sum()
@@ -196,7 +196,7 @@ class StoreEnv(Env):
         self._updateEnv()
         for i in range(self._lead_time):
             self._addStock((self.forecast.squeeze()
-                           * bucket_customers[i]).round())
+                            * bucket_customers[i]).round())
 
     def reset(self):
         self._updateObs()
@@ -206,11 +206,11 @@ class StoreEnv(Env):
     def step(self, action):
         if self._symmetric_action_space:
             new_action = torch.as_tensor(action.round().clip(0,
-                    self._max_stock) + self._max_stock / 2,
-                    dtype=torch.int32)
+                                                             self._max_stock) + self._max_stock / 2,
+                                         dtype=torch.int32)
         else:
             new_action = torch.as_tensor(action,
-                    dtype=torch.int32).clamp(0, self._max_stock)
+                                         dtype=torch.int32).clamp(0, self._max_stock)
         if self.day_position % self._substep_count == 0:
             order_cost = self._make_fast_order(new_action)
             (sales, availability) = \
@@ -229,24 +229,24 @@ class StoreEnv(Env):
             self._updateObs()
         sales.sub_(order_cost)
         utility = self.utility_function.reward(sales, waste,
-                availability)
+                                               availability)
         done = self._step_counter == self.horizon
         info = EnvInfo(sales=sales, availability=availability,
                        waste=waste, reward=utility, traj_done=done)
         return EnvStep(self.get_obs(), utility, done, info)
 
     def get_obs(self):
-        return self._obs  
+        return self._obs
 
     # ##########################################################################
     # Helpers
 
     def _updateObs(self):
         self._obs = torch.cat((self.stock, self.assortment.characs,
-                              self.forecast, torch.stack(self._buffer
-                              + self._buffer_fast, 1),
-                              torch.ones(self._assortment_size, 1)
-                              * self.day_position), 1)
+                               self.forecast, torch.stack(self._buffer
+                                                          + self._buffer_fast, 1),
+                               torch.ones(self._assortment_size, 1)
+                               * self.day_position), 1)
 
     def _updateEnv(self):
         self.day_position = 1
@@ -266,13 +266,13 @@ class StoreEnv(Env):
         replenishment = torch.stack((units, padding)).t().reshape(-1)
         restock_matrix = \
             self._repeater.repeat_interleave(repeats=replenishment.long(),
-                dim=0).view(self._assortment_size, self._max_stock)
+                                             dim=0).view(self._assortment_size, self._max_stock)
         torch.add(self.stock.sort(1)[0], restock_matrix.sort(1,
-                  descending=True)[0], out=self.stock)
+                                                             descending=True)[0], out=self.stock)
         total_units = \
             restock_matrix.ge(1).sum(1).add_(self.stock.ge(1).sum(1))
         penalty_cost_forbidden = F.relu(total_units
-                - self._max_stock).float().mul_(self.assortment.selling_price)
+                                        - self._max_stock).float().mul_(self.assortment.selling_price)
         return penalty_cost_forbidden
 
     def _sellUnits(self, units):
@@ -282,7 +282,7 @@ class StoreEnv(Env):
         availability[torch.isnan(availability)] = 1.
         reward = \
             sold.mul_(2).sub_(units).mul(self.assortment.selling_price
-                - self.assortment.cost)
+                                         - self.assortment.cost)
         (p, n) = self.stock.shape
         stock_vector = self.stock.sort(1, descending=True)[0].view(-1)
         to_keep = n - units
@@ -290,9 +290,9 @@ class StoreEnv(Env):
         # IMPROVE INTERLEAVER SPEED ###
 
         interleaver = torch.stack((units, to_keep)).t().reshape(2,
-                p).view(-1).long()
+                                                                p).view(-1).long()
         binary_vec = torch.tensor([0.0,
-                                  1]).repeat(p).repeat_interleave(interleaver)
+                                   1]).repeat(p).repeat_interleave(interleaver)
         self.stock = binary_vec.mul_(stock_vector).view(p, n)
         return (reward, availability)
 
@@ -307,10 +307,10 @@ class StoreEnv(Env):
     def _generateDemand(self, consumption_prob):
         sampled_customers = \
             self._customers.sample().round().int()[self.day_position
-                - 1]
+                                                   - 1]
         purchases_gen = d.bernoulli.Bernoulli(consumption_prob)
         demand = purchases_gen.sample((sampled_customers,
-                )).sum(0).clamp(0, self._max_stock)
+                                       )).sum(0).clamp(0, self._max_stock)
         (reward, availability) = self._sellUnits(demand)
         return (reward, availability)
 
@@ -348,7 +348,7 @@ class StoreEnv(Env):
         units,
         transport_size=300000,
         transport_cost=250.,
-        ):
+    ):
         volume = units * self.assortment.dims.t().sum(0)
         number_of_trucks = np.trunc(volume.sum() / transport_size) + 1
 
@@ -387,7 +387,7 @@ class Linear_Utility:
         alpha,
         beta,
         gamma,
-        ):
+    ):
         save__init__args(locals(), underscore=True)
 
     def reward(
@@ -395,7 +395,7 @@ class Linear_Utility:
         sales,
         waste,
         availability,
-        ):
+    ):
         return sales * self._alpha - waste * self._beta + availability \
             * self._gamma
 
@@ -407,7 +407,7 @@ class CobbDouglas_Utility:
         alpha,
         beta,
         gamma,
-        ):
+    ):
         save__init__args(locals(), underscore=True)
 
     def reward(
@@ -415,7 +415,7 @@ class CobbDouglas_Utility:
         sales,
         waste,
         availability,
-        ):
+    ):
         return sales ** self._alpha * (1 + waste) ** -self._beta \
             * availability ** self._gamma
 
@@ -427,7 +427,7 @@ class LogLinear_Utility:
         alpha,
         beta,
         gamma,
-        ):
+    ):
         save__init__args(locals(), underscore=True)
 
     def reward(
@@ -435,9 +435,9 @@ class LogLinear_Utility:
         sales,
         waste,
         availability,
-        ):
+    ):
         return torch.log(1 + sales) * self._alpha - torch.log(1
-                + waste) * self._beta + torch.log(1 + availability) \
+                                                              + waste) * self._beta + torch.log(1 + availability) \
             * self._gamma
 
 
@@ -448,7 +448,7 @@ class Homogeneous_Reward:
         alpha,
         beta,
         gamma,
-        ):
+    ):
         save__init__args(locals(), underscore=True)
 
     def reward(
@@ -456,5 +456,5 @@ class Homogeneous_Reward:
         sales,
         waste,
         availability,
-        ):
+    ):
         return (availability ** self._gamma * (sales - waste)).squeeze()
