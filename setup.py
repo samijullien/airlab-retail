@@ -26,11 +26,6 @@ DEPENDENCY_LINKS = [
 ]
 
 
-SCRIPTS = [
-    "app.py",
-]
-
-
 setup(
     name="airlab-retail",
     # version="0.0.1",
@@ -42,7 +37,4 @@ setup(
     # keywords=[],
     install_requires=REQUIRES,
     dependency_links=DEPENDENCY_LINKS,
-    packages=find_packages(),
-    include_package_data=True,
-    scripts=SCRIPTS,
 )
