@@ -1,16 +1,23 @@
+import os
+
 import dash
 from dash.dependencies import Input, Output, State
 import dash_html_components as html
 import dash_core_components as dcc
+
 import torch
 import torch.distributions as d
 import torch.nn.functional as F
+
 import numpy as np
 import pandas as pd
 import plotly.express as px
-from retail import retail
+
 from flask_caching import Cache
-import os
+
+from retail import retail
+from retail.utility import CustomUtility
+
 
 name_df = pd.read_csv('Grocery_UPC_Database.csv')
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -189,13 +196,7 @@ def update_output_div(n_clicks, n_customers, n_items, max_stock, horizon, freshn
     if n_clicks is None:
         return dash.no_update
     if utility_fun == 'custom':
-        class Custom_utility:
-            def __init__(self, utility):
-                self.txt = utility
-
-            def reward(self, s, w, a):
-                return eval(self.txt)
-        utility_fun = Custom_utility(utility)
+        utility_fun = CustomUtility(utility)
     bucketDist = d.uniform.Uniform(0, 1)
     sampled = bucketDist.sample((daily_buckets,))
     global sample_bucket_customers

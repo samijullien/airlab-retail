@@ -17,6 +17,9 @@ import subprocess
 import os.path
 
 
+from .utility import LinearUtility, LogLinearUtility, CobbDouglasUtility, HomogeneousReward
+
+
 class Assortment:
 
     def __init__(self, size, freshness=1, seed=None):
@@ -182,15 +185,13 @@ class StoreEnv(Env):
         self._phase2 = 2 * pi * torch.rand(assortment_size)
         self.create_buffers(lead_time, lead_time_fast)
         if utility_function == 'linear':
-            self.utility_function = Linear_Utility(**utility_weights)
+            self.utility_function = LinearUtility(**utility_weights)
         elif utility_function == 'loglinear':
-            self.utility_function = LogLinear_Utility(**utility_weights)
+            self.utility_function = LogLinearUtility(**utility_weights)
         elif utility_function == 'cobbdouglas':
-            self.utility_function = \
-                CobbDouglas_Utility(**utility_weights)
+            self.utility_function = CobbDouglasUtility(**utility_weights)
         elif utility_function == 'homogeneous':
-            self.utility_function = \
-                Homogeneous_Reward(**utility_weights)
+            self.utility_function = HomogeneousReward(**utility_weights)
         else:
             self.utility_function = utility_function
         self._updateEnv()
@@ -378,83 +379,3 @@ def transportation_cost(order, transport_size=300000,
 
     total_cost = number_of_trucks * transport_cost
     return volume / total_cost
-
-
-class Linear_Utility:
-
-    def __init__(
-        self,
-        alpha,
-        beta,
-        gamma,
-    ):
-        save__init__args(locals(), underscore=True)
-
-    def reward(
-        self,
-        sales,
-        waste,
-        availability,
-    ):
-        return sales * self._alpha - waste * self._beta + availability \
-            * self._gamma
-
-
-class CobbDouglas_Utility:
-
-    def __init__(
-        self,
-        alpha,
-        beta,
-        gamma,
-    ):
-        save__init__args(locals(), underscore=True)
-
-    def reward(
-        self,
-        sales,
-        waste,
-        availability,
-    ):
-        return sales ** self._alpha * (1 + waste) ** -self._beta \
-            * availability ** self._gamma
-
-
-class LogLinear_Utility:
-
-    def __init__(
-        self,
-        alpha,
-        beta,
-        gamma,
-    ):
-        save__init__args(locals(), underscore=True)
-
-    def reward(
-        self,
-        sales,
-        waste,
-        availability,
-    ):
-        return torch.log(1 + sales) * self._alpha - torch.log(1
-                                                              + waste) * self._beta + torch.log(1 + availability) \
-            * self._gamma
-
-
-class Homogeneous_Reward:
-
-    def __init__(
-        self,
-        alpha,
-        beta,
-        gamma,
-    ):
-        save__init__args(locals(), underscore=True)
-
-    def reward(
-        self,
-        sales,
-        waste,
-        availability,
-    ):
-        return (availability ** self._gamma * (sales - waste)).squeeze()
