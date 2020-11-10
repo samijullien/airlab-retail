@@ -15,7 +15,7 @@ import plotly.express as px
 
 from flask_caching import Cache
 
-from retail import retail
+from retail.retail import StoreEnv
 from retail.utility import CustomUtility
 
 
@@ -192,7 +192,10 @@ app.layout = html.Div(
            State('leadtime_long', 'value'),
            State('leadtime_fast', 'value'),
            State('daily_buckets', 'value')])
-def update_output_div(n_clicks, n_customers, n_items, max_stock, horizon, freshness, seed, utility_fun, utility, weight_waste, weight_sales, weight_availability, bias, variance, leadtime_long, leadtime_fast, daily_buckets):
+def update_output_div(n_clicks, n_customers, n_items, max_stock, horizon,
+                      freshness, seed, utility_fun, utility, weight_waste,
+                      weight_sales, weight_availability, bias, variance,
+                      leadtime_long, leadtime_fast, daily_buckets):
     if n_clicks is None:
         return dash.no_update
     if utility_fun == 'custom':
@@ -201,27 +204,33 @@ def update_output_div(n_clicks, n_customers, n_items, max_stock, horizon, freshn
     sampled = bucketDist.sample((daily_buckets,))
     global sample_bucket_customers
     sample_bucket_customers = (n_customers*sampled/sampled.sum()).round()
-    kwargsStore = {'assortment_size': n_items,
-                   'freshness': freshness, 'seed': seed,
-                   'max_stock': max_stock,   'utility_function': utility_fun,
-                   'utility_weights': {
-                       'alpha': weight_sales,
-                       'beta': weight_waste,
-                       'gamma': weight_availability},
-                   'horizon': horizon,
-                   'lead_time': leadtime_long,
-                   'lead_time_fast': leadtime_fast,
-                   'forecastBias': bias,
-                   'forecastVariance': variance,
-                   'substep_count': daily_buckets,
-                   'bucket_cov': torch.eye(daily_buckets) / 100}
+    kwargsStore = {
+        'assortment_size': n_items,
+        'freshness': freshness,
+        'seed': seed,
+        'max_stock': max_stock,
+        'utility_function': utility_fun,
+        'utility_weights': {
+            'alpha': weight_sales,
+            'beta': weight_waste,
+            'gamma': weight_availability,
+        },
+        'horizon': horizon,
+        'lead_time': leadtime_long,
+        'lead_time_fast': leadtime_fast,
+        'forecastBias': bias,
+        'forecastVariance': variance,
+        'substep_count': daily_buckets,
+        'bucket_cov': torch.eye(daily_buckets) / 100,
+    }
     global store
-    store = retail.StoreEnv(
-        **kwargsStore, bucket_customers=sample_bucket_customers)
-    assortment_df = pd.DataFrame({'Cost': np.round(store.assortment.cost.numpy(), 2),
-                                  'Price': np.round(store.assortment.selling_price.numpy(), 2),
-                                  'Shelf life at purchase': store.assortment.shelf_lives.numpy(),
-                                  'Name': name_df.sample(n_items).values.tolist()})
+    store = StoreEnv(**kwargsStore, bucket_customers=sample_bucket_customers)
+    assortment_df = pd.DataFrame({
+        'Cost': np.round(store.assortment.cost.numpy(), 2),
+        'Price': np.round(store.assortment.selling_price.numpy(), 2),
+        'Shelf life at purchase': store.assortment.shelf_lives.numpy(),
+        'Name': name_df.sample(n_items).values.tolist(),
+    })
     sc = px.scatter(assortment_df, x='Cost', y='Price', color='Shelf life at purchase',
                     title='Generated items at your store', hover_name='Name',
                     hover_data={'Name': False,
