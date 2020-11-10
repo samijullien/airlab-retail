@@ -369,14 +369,3 @@ class StoreEnv(Env):
     @property
     def horizon(self):
         return self._horizon
-
-
-def transportation_cost(order, transport_size=300000,
-                        transport_cost=250.):
-    volume = units * self.assortment.dims.t().sum(0)
-    number_of_trucks = np.trunc(volume.sum() / transport_size) + 1
-
-    # This +1 has no impact even if the order is 0 as we return the contribution to the total cost, not the total cost itself
-
-    total_cost = number_of_trucks * transport_cost
-    return volume / total_cost
