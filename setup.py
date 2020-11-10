@@ -9,15 +9,13 @@ REQUIRES = [
     "jupyter==1.0.0",
     "torch==1.4.0",
 
-    # UI
+    # server
     "dash",
+    "flask_caching",
+    "Flask",
 
     # deep RL
     "rlpyt",
-
-    # misc missing libs
-    "flask_caching",
-    "Flask",
 ]
 
 
