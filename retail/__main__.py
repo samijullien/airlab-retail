@@ -8,6 +8,7 @@ import torch.nn.functional as F
 
 import dash
 from dash.dependencies import Input, Output, State
+from expiringdict import ExpiringDict
 import plotly.express as px
 
 from retail import create_app
@@ -16,6 +17,10 @@ from retail.utility import CustomUtility
 
 
 app = create_app()
+
+
+store_cache = ExpiringDict(max_len=100, max_age_seconds=120)
+
 
 @app.callback(
     Output('output', 'figure'),
@@ -47,7 +52,7 @@ def update_output_div(n_clicks, session_id, n_customers, n_items, max_stock,
         utility_fun = CustomUtility(utility)
     bucketDist = d.uniform.Uniform(0, 1)
     sampled = bucketDist.sample((daily_buckets,))
-    global sample_bucket_customers
+
     sample_bucket_customers = (n_customers*sampled/sampled.sum()).round()
     kwargsStore = {
         'bucket_customers': sample_bucket_customers,
@@ -69,8 +74,14 @@ def update_output_div(n_clicks, session_id, n_customers, n_items, max_stock,
         'substep_count': daily_buckets,
         'bucket_cov': torch.eye(daily_buckets) / 100,
     }
-    global store
+
+    # create new store
     store = StoreEnv(**kwargsStore)
+
+    # cache using user-specific uuid
+    store_cache[session_id] = (sample_bucket_customers, store)
+
+    # plot store assortment
     return store.assortment.scatter_plot()
 
 
@@ -84,6 +95,10 @@ def update_output_div(n_clicks, session_id, n_customers, n_items, max_stock,
 def update_output_order(n_clicks, session_id, n_customers, horizon, order):
     if n_clicks is None:
         return dash.no_update
+
+    # retrieve cached store based on user-specific uuid
+    sample_bucket_customers, store = store_cache[session_id]
+
     done = False
     obs = store.reset()
     rewards = []
