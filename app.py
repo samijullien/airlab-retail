@@ -1,14 +1,13 @@
+import numpy as np
 import os
-
-import dash
-from dash.dependencies import Input, Output, State
+import pandas as pd
 
 import torch
 import torch.distributions as d
 import torch.nn.functional as F
 
-import numpy as np
-import pandas as pd
+import dash
+from dash.dependencies import Input, Output, State
 import plotly.express as px
 
 from retail import create_app
