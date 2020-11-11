@@ -15,8 +15,6 @@ from retail.retail import StoreEnv
 from retail.utility import CustomUtility
 
 
-name_df = pd.read_csv('Grocery_UPC_Database.csv')
-
 app = create_app()
 
 @app.callback(
@@ -51,6 +49,7 @@ def update_output_div(n_clicks, n_customers, n_items, max_stock, horizon,
     global sample_bucket_customers
     sample_bucket_customers = (n_customers*sampled/sampled.sum()).round()
     kwargsStore = {
+        'bucket_customers': sample_bucket_customers,
         'assortment_size': n_items,
         'freshness': freshness,
         'seed': seed,
@@ -70,22 +69,8 @@ def update_output_div(n_clicks, n_customers, n_items, max_stock, horizon,
         'bucket_cov': torch.eye(daily_buckets) / 100,
     }
     global store
-    store = StoreEnv(**kwargsStore, bucket_customers=sample_bucket_customers)
-    assortment_df = pd.DataFrame({
-        'Cost': np.round(store.assortment.cost.numpy(), 2),
-        'Price': np.round(store.assortment.selling_price.numpy(), 2),
-        'Shelf life at purchase': store.assortment.shelf_lives.numpy(),
-        'Name': name_df.sample(n_items).values.tolist(),
-    })
-    sc = px.scatter(assortment_df, x='Cost', y='Price', color='Shelf life at purchase',
-                    title='Generated items at your store', hover_name='Name',
-                    hover_data={'Name': False,
-                                'Price': ":$,.2f",
-                                'Cost': ":$,.2f",
-                                'Shelf life at purchase': True})
-    sc.update_yaxes(tickprefix="€")
-    sc.update_xaxes(tickprefix="€")
-    return(sc)
+    store = StoreEnv(**kwargsStore)
+    return store.assortment.scatter_plot()
 
 
 @app.callback(

@@ -12,6 +12,7 @@ import torch
 import torch.distributions as d
 import torch.nn.functional as F
 
+import plotly.express as px
 from rlpyt.envs.base import Env, EnvStep
 from rlpyt.spaces.int_box import IntBox
 from rlpyt.spaces.float_box import FloatBox
@@ -21,9 +22,16 @@ from rlpyt.samplers.collections import TrajInfo
 from .utility import LinearUtility, LogLinearUtility, CobbDouglasUtility, HomogeneousReward
 
 
+name_df = pd.read_csv('Grocery_UPC_Database.csv')
+
+
 class Assortment:
 
     def __init__(self, size, freshness=1, seed=None):
+        self.size = size
+        self.freshness = freshness
+        self.seed = seed
+
         file_path = os.path.dirname(os.path.abspath(__file__))
         args = [str(size), str(seed), file_path]
         path_to_rscript = os.path.join(file_path,
@@ -35,7 +43,6 @@ class Assortment:
 
         df = pd.read_csv(os.path.join(file_path,
                                       'item_generation/assortment.csv'))
-        self.seed = seed
         self.selling_price = torch.tensor(df.Price)
         self.cost = torch.tensor(df.Cost)
 
@@ -73,6 +80,26 @@ class Assortment:
         # dothewoogyboogy
 
         return NotImplemented
+
+    def to_dataframe(self):
+        return pd.DataFrame({
+            'Cost': np.round(self.cost.numpy(), 2),
+            'Price': np.round(self.selling_price.numpy(), 2),
+            'Shelf life at purchase': self.shelf_lives.numpy(),
+            'Name': name_df.sample(self.size).values.tolist(),
+        })
+
+    def scatter_plot(self):
+        sc = px.scatter(self.to_dataframe(),
+                        x='Cost', y='Price', color='Shelf life at purchase',
+                        title='Generated items at your store', hover_name='Name',
+                        hover_data={'Name': False,
+                                    'Price': ":$,.2f",
+                                    'Cost': ":$,.2f",
+                                    'Shelf life at purchase': True})
+        sc.update_yaxes(tickprefix="€")
+        sc.update_xaxes(tickprefix="€")
+        return sc
 
 
 EnvInfo = namedtuple('EnvInfo', ['sales', 'availability', 'waste',
