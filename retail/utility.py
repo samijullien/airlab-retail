@@ -1,6 +1,6 @@
 from rlpyt.utils.quick_args import save__init__args
 import torch
-
+import torch.nn.functional as F
 
 class LinearUtility:
 
@@ -38,7 +38,7 @@ class CobbDouglasUtility:
         waste,
         availability,
     ):
-        return sales ** self._alpha * (1 + waste) ** -self._beta \
+        return F.relu(sales) ** self._alpha * (1 + waste) ** -self._beta \
             * availability ** self._gamma
 
 
@@ -58,7 +58,7 @@ class LogLinearUtility:
         waste,
         availability,
     ):
-        return torch.log(1 + sales) * self._alpha - torch.log(1
+        return torch.log(1 + F.relu(sales)) * self._alpha - torch.log(1
                                                               + waste) * self._beta + torch.log(1 + availability) \
             * self._gamma
 
