@@ -8,6 +8,7 @@ REQUIRES = [
     "numpy",
     "pandas==0.25.1",
     "rlpyt",
+    "rpy2",
     "torch==1.4.0",
 ]
 
