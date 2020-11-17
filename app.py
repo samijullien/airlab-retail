@@ -11,7 +11,7 @@ from dash.dependencies import Input, Output, State
 import plotly.express as px
 
 from retail import create_app
-from retail.retail import StoreEnv
+from retail.store import StoreEnv
 from retail.utility import CustomUtility
 
 

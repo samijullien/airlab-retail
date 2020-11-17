@@ -1,11 +1,5 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
 from collections import namedtuple
 from math import pi
-import os
-
-import numpy as np
-import pandas as pd
 
 import torch
 import torch.distributions as d
@@ -15,52 +9,14 @@ from rlpyt.envs.base import Env, EnvStep
 from rlpyt.spaces.int_box import IntBox
 from rlpyt.spaces.float_box import FloatBox
 from rlpyt.utils.quick_args import save__init__args
-from rlpyt.samplers.collections import TrajInfo
 
-from .utility import LinearUtility, LogLinearUtility, CobbDouglasUtility, HomogeneousReward
-from .store.assortment import Assortment
+from retail.utility import LinearUtility, LogLinearUtility, CobbDouglasUtility, HomogeneousReward
 
-
-EnvInfo = namedtuple('EnvInfo', ['sales', 'availability', 'waste',
-                                 'reward', 'traj_done'])
+from .assortment import Assortment
 
 
-class RetailTrajInfo(TrajInfo):
-
-    def __init__(self, momentum=.05, **kwargs):
-        super().__init__(**kwargs)
-        self.AverageReward = 0
-        self.Sales = 0
-        self.Availability = 0
-        self.Waste = 0
-        self.Momentum = momentum
-
-    def step(
-        self,
-        observation,
-        action,
-        reward,
-        done,
-        agent_info,
-        env_info,
-    ):
-        super().step(
-            observation,
-            action,
-            reward,
-            done,
-            agent_info,
-            env_info,
-        )
-        self.AverageReward = self.Momentum * reward + (1
-                                                       - self.Momentum) * self.AverageSales
-        self.Sales = self.Momentum * getattr(env_info, 'sales', 0) + (1
-                                                                      - self.Momentum) * self.AverageSales
-        self.Availability = self.Momentum * getattr(env_info,
-                                                    'availability', 0) + (1 - self.Momentum) \
-            * self.Availability
-        self.Waste = self.Momentum * getattr(env_info, 'waste', 0) + (1
-                                                                      - self.Momentum) * self.Waste
+EnvInfo = namedtuple('EnvInfo',
+                     ['sales', 'availability', 'waste', 'reward', 'traj_done'])
 
 
 class StoreEnv(Env):
