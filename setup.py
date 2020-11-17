@@ -3,21 +3,12 @@ from setuptools import setup, find_packages
 
 
 REQUIRES = [
-    # core
+    "dash",
+    "jupyter==1.0.0",
     "numpy",
     "pandas==0.25.1",
-    "jupyter==1.0.0",
-    "torch==1.4.0",
-
-    # UI
-    "dash",
-
-    # deep RL
     "rlpyt",
-
-    # misc missing libs
-    "flask_caching",
-    "Flask",
+    "torch==1.4.0",
 ]
 
 
@@ -28,13 +19,11 @@ DEPENDENCY_LINKS = [
 
 setup(
     name="airlab-retail",
-    # version="0.0.1",
-    # description="",
-    # long_description="",
-    # author="Sami Jullien",
-    # url="https://github.com/samijullien/airlab-retail",
-    # license="MIT",
-    # keywords=[],
+    description="Library to simulate the ordering policy of a grocery store in order to reduce waste",
+    long_description=open("README.md").read(),
+    author="Sami Jullien",
+    url="https://github.com/samijullien/airlab-retail",
+    license="MIT",
     install_requires=REQUIRES,
     dependency_links=DEPENDENCY_LINKS,
 )

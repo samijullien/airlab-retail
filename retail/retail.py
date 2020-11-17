@@ -1,25 +1,37 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import numpy as np
-import os
-from math import pi
 from collections import namedtuple
+from math import pi
+import os
+import subprocess
+
+import numpy as np
 import pandas as pd
+
 import torch
 import torch.distributions as d
 import torch.nn.functional as F
+
+import plotly.express as px
 from rlpyt.envs.base import Env, EnvStep
 from rlpyt.spaces.int_box import IntBox
 from rlpyt.spaces.float_box import FloatBox
 from rlpyt.utils.quick_args import save__init__args
 from rlpyt.samplers.collections import TrajInfo
-import subprocess
-import os.path
+
+from .utility import LinearUtility, LogLinearUtility, CobbDouglasUtility, HomogeneousReward
+
+
+name_df = pd.read_csv('Grocery_UPC_Database.csv')
 
 
 class Assortment:
 
     def __init__(self, size, freshness=1, seed=None):
+        self.size = size
+        self.freshness = freshness
+        self.seed = seed
+
         file_path = os.path.dirname(os.path.abspath(__file__))
         args = [str(size), str(seed), file_path]
         path_to_rscript = os.path.join(file_path,
@@ -31,7 +43,6 @@ class Assortment:
 
         df = pd.read_csv(os.path.join(file_path,
                                       'item_generation/assortment.csv'))
-        self.seed = seed
         self.selling_price = torch.tensor(df.Price)
         self.cost = torch.tensor(df.Cost)
 
@@ -69,6 +80,26 @@ class Assortment:
         # dothewoogyboogy
 
         return NotImplemented
+
+    def to_dataframe(self):
+        return pd.DataFrame({
+            'Cost': np.round(self.cost.numpy(), 2),
+            'Price': np.round(self.selling_price.numpy(), 2),
+            'Shelf life at purchase': self.shelf_lives.numpy(),
+            'Name': name_df.sample(self.size).values.tolist(),
+        })
+
+    def scatter_plot(self):
+        sc = px.scatter(self.to_dataframe(),
+                        x='Cost', y='Price', color='Shelf life at purchase',
+                        title='Generated items at your store', hover_name='Name',
+                        hover_data={'Name': False,
+                                    'Price': ":$,.2f",
+                                    'Cost': ":$,.2f",
+                                    'Shelf life at purchase': True})
+        sc.update_yaxes(tickprefix="€")
+        sc.update_xaxes(tickprefix="€")
+        return sc
 
 
 EnvInfo = namedtuple('EnvInfo', ['sales', 'availability', 'waste',
@@ -182,15 +213,13 @@ class StoreEnv(Env):
         self._phase2 = 2 * pi * torch.rand(assortment_size)
         self.create_buffers(lead_time, lead_time_fast)
         if utility_function == 'linear':
-            self.utility_function = Linear_Utility(**utility_weights)
+            self.utility_function = LinearUtility(**utility_weights)
         elif utility_function == 'loglinear':
-            self.utility_function = LogLinear_Utility(**utility_weights)
+            self.utility_function = LogLinearUtility(**utility_weights)
         elif utility_function == 'cobbdouglas':
-            self.utility_function = \
-                CobbDouglas_Utility(**utility_weights)
+            self.utility_function = CobbDouglasUtility(**utility_weights)
         elif utility_function == 'homogeneous':
-            self.utility_function = \
-                Homogeneous_Reward(**utility_weights)
+            self.utility_function = HomogeneousReward(**utility_weights)
         else:
             self.utility_function = utility_function
         self._updateEnv()
@@ -367,94 +396,3 @@ class StoreEnv(Env):
     @property
     def horizon(self):
         return self._horizon
-
-
-def transportation_cost(order, transport_size=300000,
-                        transport_cost=250.):
-    volume = units * self.assortment.dims.t().sum(0)
-    number_of_trucks = np.trunc(volume.sum() / transport_size) + 1
-
-    # This +1 has no impact even if the order is 0 as we return the contribution to the total cost, not the total cost itself
-
-    total_cost = number_of_trucks * transport_cost
-    return volume / total_cost
-
-
-class Linear_Utility:
-
-    def __init__(
-        self,
-        alpha,
-        beta,
-        gamma,
-    ):
-        save__init__args(locals(), underscore=True)
-
-    def reward(
-        self,
-        sales,
-        waste,
-        availability,
-    ):
-        return sales * self._alpha - waste * self._beta + availability \
-            * self._gamma
-
-
-class CobbDouglas_Utility:
-
-    def __init__(
-        self,
-        alpha,
-        beta,
-        gamma,
-    ):
-        save__init__args(locals(), underscore=True)
-
-    def reward(
-        self,
-        sales,
-        waste,
-        availability,
-    ):
-        return sales ** self._alpha * (1 + waste) ** -self._beta \
-            * availability ** self._gamma
-
-
-class LogLinear_Utility:
-
-    def __init__(
-        self,
-        alpha,
-        beta,
-        gamma,
-    ):
-        save__init__args(locals(), underscore=True)
-
-    def reward(
-        self,
-        sales,
-        waste,
-        availability,
-    ):
-        return torch.log(1 + sales) * self._alpha - torch.log(1
-                                                              + waste) * self._beta + torch.log(1 + availability) \
-            * self._gamma
-
-
-class Homogeneous_Reward:
-
-    def __init__(
-        self,
-        alpha,
-        beta,
-        gamma,
-    ):
-        save__init__args(locals(), underscore=True)
-
-    def reward(
-        self,
-        sales,
-        waste,
-        availability,
-    ):
-        return (availability ** self._gamma * (sales - waste)).squeeze()
