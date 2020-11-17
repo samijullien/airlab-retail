@@ -3,8 +3,11 @@ import subprocess
 
 import numpy as np
 import pandas as pd
+
 import plotly.express as px
 import torch
+
+from .util import Rscript
 
 
 name_df = pd.read_csv('Grocery_UPC_Database.csv')
@@ -18,16 +21,9 @@ class Assortment:
         self.seed = seed
 
         file_path = os.path.dirname(os.path.abspath(__file__))
-        args = [str(size), str(seed), file_path]
-        path_to_rscript = os.path.join(file_path,
-                                       '../item_generation/assortmentGen.R')
-        subprocess.call(['Rscript', path_to_rscript] + args,
-                        universal_newlines=True)
+        Rscript(size, seed, file_path)
 
-        # os.system("Rscript item_generation\\assortmentGen.R " + str(size) + " " + str(seed))
-
-        path_to_csv = os.path.join(file_path,
-                                   '../item_generation/assortment.csv')
+        path_to_csv = os.path.join(file_path, 'assortment.csv')
         df = pd.read_csv(path_to_csv)
         self.selling_price = torch.tensor(df.Price)
         self.cost = torch.tensor(df.Cost)
