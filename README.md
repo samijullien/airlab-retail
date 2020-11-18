@@ -43,3 +43,17 @@ Without Docker:
 	python3 -m retail
 
 View the grocery store simulation in your web browser at <http://localhost:8050/>.
+
+## Development
+
+To increment a version:
+
+- Update the version in [setup.py](setup.py).
+- Create a git tag with the same version, e.g. [0.1.1](https://github.com/samijullien/airlab-retail/releases/tag/0.1.1).
+- Build and publish Docker image.
+
+Docker commands:
+
+	docker build . -t shubhaguha/retail:${VERSION} -t shubhaguha/retail:latest
+	docker push shubhaguha/retail:${VERSION}
+	docker push shubhaguha/retail:latest
