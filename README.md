@@ -17,30 +17,29 @@ We additionally provide three usage examples of RetaiL:
 
 ## Requirements
 
-RetaiL requires R, with the copula package to generate items. Moreover, RetaiL requires rlpyt in its version 0.1.1.dev0.
-RetaiL requires Python 3.6 or 3.7.
+This application was written using Python 3.7 and R, including the R package `copula` to generate items.
 
-## Installation
-
-	# Checkout this git repository
-	# Create a virtual environment
-	python3 -m venv env
-	# Activate the environment
-	source env/bin/activate
-	# Install the dependencies
-	python3 setup.py install
+It was packaged using Docker 19.03.13 for easy setup and usage regardless of operating system.
 
 ## Usage
 
-Run server:
+With Docker:
 
+	docker pull shubhaguha/retail:latest
+	docker run -ti --rm -p 8050:8050 shubhaguha/retail:latest
+
+Without Docker:
+
+	# Checkout this git repository
+	git clone https://github.com/samijullien/airlab-retail.git
+	cd airlab-retail
+
+	# Use a virtual environment
+	python3 -m venv env
+	source env/bin/activate
+
+	# Install and run
+	python3 setup.py install
 	python3 app.py
 
 View the grocery store simulation in your web browser at <http://localhost:8050/>.
-
-## Development
-
-A development environment can be set up regardless of the developer's operating system by using Docker.
-
-	docker build . -t retail
-	docker run -ti --rm -p 8050:8050 retail
