@@ -6,7 +6,7 @@ RUN apt-get update \
 
 # Install R dependencies
 RUN wget -P /tmp \
-    https://cran.r-project.org/src/contrib/colorspace_1.4-1.tar.gz \
+    https://cran.r-project.org/src/contrib/colorspace_2.0-0.tar.gz \
     https://cran.r-project.org/src/contrib/gsl_2.1-6.tar.gz \
     https://cran.r-project.org/src/contrib/ADGofTest_0.3.tar.gz \
     https://cran.r-project.org/src/contrib/stabledist_0.7-1.tar.gz \
@@ -16,7 +16,7 @@ RUN wget -P /tmp \
     https://cran.r-project.org/src/contrib/numDeriv_2016.8-1.1.tar.gz \
     https://cran.r-project.org/src/contrib/copula_1.0-0.tar.gz \
     && R CMD INSTALL \
-    /tmp/colorspace_1.4-1.tar.gz \
+    /tmp/colorspace_2.0-0.tar.gz \
     /tmp/gsl_2.1-6.tar.gz \
     /tmp/ADGofTest_0.3.tar.gz \
     /tmp/stabledist_0.7-1.tar.gz \
