@@ -58,9 +58,9 @@ class LogLinearUtility:
         waste,
         availability,
     ):
-        return torch.log(1 + F.relu(sales)) * self._alpha - torch.log(1
-                                                              + waste) * self._beta + torch.log(1 + availability) \
-            * self._gamma
+        return torch.log(1 + F.relu(sales)) * self._alpha \
+        - torch.log(torch.tensor(1. + waste)) * self._beta + torch.log(1.
+        + availability) * self._gamma
 
 
 class HomogeneousReward:
