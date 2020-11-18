@@ -33,8 +33,8 @@ FROM base
 WORKDIR /workspace
 COPY ./ ./
 
-# Install Python dependencies
-RUN python setup.py develop
+# Install Python dependencies & retail package
+RUN python setup.py install
 
 # Run server
 EXPOSE 8050
