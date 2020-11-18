@@ -38,4 +38,4 @@ RUN python setup.py install
 
 # Run server
 EXPOSE 8050
-CMD [ "python", "app.py" ]
+CMD [ "python", "-m", "retail" ]
