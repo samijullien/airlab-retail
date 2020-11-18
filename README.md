@@ -40,6 +40,6 @@ Without Docker:
 
 	# Install and run
 	python3 setup.py install
-	python3 app.py
+	python3 -m retail
 
 View the grocery store simulation in your web browser at <http://localhost:8050/>.
