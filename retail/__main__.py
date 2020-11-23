@@ -19,7 +19,8 @@ app = create_app()
 
 @app.callback(
     Output('output', 'figure'),
-    [Input('create', 'n_clicks')],
+    [Input('create', 'n_clicks'),
+    Input('session-id', 'children')],
     state=[State('n_customers', 'value'),
            State('n_items', 'value'),
            State('max_stock', 'value'),
@@ -36,10 +37,10 @@ app = create_app()
            State('leadtime_long', 'value'),
            State('leadtime_fast', 'value'),
            State('daily_buckets', 'value')])
-def update_output_div(n_clicks, n_customers, n_items, max_stock, horizon,
-                      freshness, seed, utility_fun, utility, weight_waste,
-                      weight_sales, weight_availability, bias, variance,
-                      leadtime_long, leadtime_fast, daily_buckets):
+def update_output_div(n_clicks, session_id, n_customers, n_items, max_stock,
+                      horizon, freshness, seed, utility_fun, utility,
+                      weight_waste, weight_sales, weight_availability, bias,
+                      variance, leadtime_long, leadtime_fast, daily_buckets):
     if n_clicks is None:
         return dash.no_update
     if utility_fun == 'custom':
@@ -75,11 +76,12 @@ def update_output_div(n_clicks, n_customers, n_items, max_stock, horizon,
 
 @app.callback(
     Output('output2', 'figure'),
-    [Input('order_button', 'n_clicks')],
+    [Input('order_button', 'n_clicks'),
+    Input('session-id', 'children')],
     state=[State('n_customers', 'value'),
            State('horizon', 'value'),
            State('order', 'value')])
-def update_output_order(n_clicks, n_customers, horizon, order):
+def update_output_order(n_clicks, session_id, n_customers, horizon, order):
     if n_clicks is None:
         return dash.no_update
     done = False
