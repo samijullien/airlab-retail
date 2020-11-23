@@ -8,6 +8,7 @@ import torch.nn.functional as F
 
 import dash
 from dash.dependencies import Input, Output, State
+from flask_caching import Cache
 import plotly.express as px
 
 from retail import create_app
@@ -16,6 +17,26 @@ from retail.utility import CustomUtility
 
 
 app = create_app()
+cache = Cache(app.server, config={
+    'CACHE_TYPE': 'filesystem',
+    'CACHE_DIR': '/tmp/flask-cache',
+
+    # should be equal to maximum number of users on the app at a single time
+    'CACHE_THRESHOLD': 100,
+})
+
+
+def get_store(session_id, **store_kwargs):
+    @cache.memoize()
+    def create_store_env(session_id, **kwargs):
+        # expensive or user/session-unique data processing step goes here
+        store = StoreEnv(**kwargs)
+        return store #.to_json()
+        # return json.dumps(store)
+
+    return create_store_env(session_id, **store_kwargs)
+    # return json.loads(create_store_env(session_id, **store_kwargs))
+
 
 @app.callback(
     Output('output', 'figure'),
@@ -47,10 +68,8 @@ def update_output_div(n_clicks, session_id, n_customers, n_items, max_stock,
         utility_fun = CustomUtility(utility)
     bucketDist = d.uniform.Uniform(0, 1)
     sampled = bucketDist.sample((daily_buckets,))
-    global sample_bucket_customers
-    sample_bucket_customers = (n_customers*sampled/sampled.sum()).round()
-    kwargsStore = {
-        'bucket_customers': sample_bucket_customers,
+    store_kwargs = {
+        'bucket_customers': (n_customers*sampled/sampled.sum()).round(),
         'assortment_size': n_items,
         'freshness': freshness,
         'seed': seed,
@@ -69,8 +88,7 @@ def update_output_div(n_clicks, session_id, n_customers, n_items, max_stock,
         'substep_count': daily_buckets,
         'bucket_cov': torch.eye(daily_buckets) / 100,
     }
-    global store
-    store = StoreEnv(**kwargsStore)
+    store = get_store(session_id, **store_kwargs)
     return store.assortment.scatter_plot()
 
 
@@ -87,6 +105,8 @@ def update_output_order(n_clicks, session_id, n_customers, horizon, order):
     done = False
     obs = store.reset()
     rewards = []
+    store = get_store(session_id, **store_kwargs)
+    sample_bucket_customers = store.bucket_customers
     while not done:
         customers = sample_bucket_customers.mean().round()
         stock = store.get_full_inventory_position()

@@ -45,6 +45,25 @@ class StoreEnv(Env):
     ):
         save__init__args(locals(), underscore=True)
 
+        self.bucket_customers = bucket_customers
+        self.assortment_size = assortment_size
+        self.freshness = freshness
+        self.seed = seed
+        self.max_stock = max_stock
+        self.utility_function = utility_function
+        self.utility_weights = {
+            'alpha': utility_weights['alpha'],
+            'beta': utility_weights['beta'],
+            'gamma': utility_weights['gamma'],
+        }
+        self.horizon = horizon
+        self.lead_time = lead_time
+        self.lead_time_fast = lead_time_fast
+        self.forecastBias = forecastBias
+        self.forecastVariance = forecastVariance
+        self.substep_count = substep_count
+        self.bucket_cov = bucket_cov
+
         # Spaces
 
         if symmetric_action_space:
@@ -132,8 +151,7 @@ class StoreEnv(Env):
             waste = 0  # By default, no waste before the end of day
             self._updateObs()
         sales.sub_(order_cost)
-        utility = self.utility_function.reward(sales, waste,
-                                               availability)
+        utility = self.utility_function.reward(sales, waste, availability)
         done = self._step_counter == self.horizon
         info = EnvInfo(sales=sales, availability=availability,
                        waste=waste, reward=utility, traj_done=done)
@@ -141,6 +159,28 @@ class StoreEnv(Env):
 
     def get_obs(self):
         return self._obs
+
+    def to_json(self):
+        return {
+            'bucket_customers': self.bucket_customers,
+            'assortment_size': self.assortment_size,
+            'freshness': self.freshness,
+            'seed': self.seed,
+            'max_stock': self.max_stock,
+            'utility_function': self.utility_function,
+            'utility_weights': {
+                'alpha': self.utility_weights['alpha'],
+                'beta': self.utility_weights['beta'],
+                'gamma': self.utility_weights['gamma'],
+            },
+            'horizon': self.horizon,
+            'lead_time': self.lead_time,
+            'lead_time_fast': self.lead_time_fast,
+            'forecastBias': self.forecastBias,
+            'forecastVariance': self.forecastVariance,
+            'substep_count': self.substep_count,
+            'bucket_cov': self.bucket_cov,
+        }
 
     # ##########################################################################
     # Helpers
