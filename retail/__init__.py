@@ -1,3 +1,5 @@
+import uuid
+
 import dash
 import dash_html_components as html
 import dash_core_components as dcc
@@ -6,9 +8,12 @@ from .retail_traj_info import RetailTrajInfo
 
 
 def serve_layout_func(img):
+    session_id = str(uuid.uuid4())
+
     def _serve_layout():
-        return html.Div(
-            [html.Div([
+        return html.Div([
+            html.Div(session_id, id='session-id', style={'display': 'none'}),
+            html.Div([
                 html.Div([html.H1(children='RetaiL Store Generator and Management'),
                         html.Img(src=img, style={'height': '70%', 'width': '70%'})],
                         style={'columnCount': 2}),
