@@ -1,9 +1,12 @@
 from collections import namedtuple
 from math import pi
+import numpy as np
 
 import torch
 import torch.distributions as d
 import torch.nn.functional as F
+
+import plotly.express as px
 
 from rlpyt.envs.base import Env, EnvStep
 from rlpyt.spaces.int_box import IntBox
@@ -44,6 +47,8 @@ class StoreEnv(Env):
         symmetric_action_space=False,
     ):
         save__init__args(locals(), underscore=True)
+
+        self.bucket_customers = bucket_customers
 
         # Spaces
 
@@ -132,8 +137,7 @@ class StoreEnv(Env):
             waste = 0  # By default, no waste before the end of day
             self._updateObs()
         sales.sub_(order_cost)
-        utility = self.utility_function.reward(sales, waste,
-                                               availability)
+        utility = self.utility_function.reward(sales, waste, availability)
         done = self._step_counter == self.horizon
         info = EnvInfo(sales=sales, availability=availability,
                        waste=waste, reward=utility, traj_done=done)
@@ -141,6 +145,30 @@ class StoreEnv(Env):
 
     def get_obs(self):
         return self._obs
+
+    def run_to_completion(self, order, n_customers):
+        done = False
+        obs = self.reset()
+        rewards = []
+        while not done:
+            customers = self.bucket_customers.mean().round()
+            stock = self.get_full_inventory_position()
+            forecast = self.forecast.squeeze()
+            std = torch.sqrt(customers*forecast+(1-forecast))
+            number = F.relu(eval(order)).round()
+            # Step the environment and get its observation
+            obs = self.step(number.numpy())
+            # Store reward for the specific time step
+            rewards.append(obs[1].sum())
+            done = obs[2]
+        return rewards
+
+    def plot_rewards(self, rewards, horizon):
+        somme = np.sum(torch.stack(rewards).numpy().reshape(-1, 4), axis=1)
+        fig = px.line(x=np.arange(0, horizon, 1), y=np.round(somme, 2),
+                      title='Daily Utility value',
+                      labels={'x': 'Time step', 'y': 'Utility'})
+        return fig
 
     # ##########################################################################
     # Helpers
