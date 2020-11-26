@@ -15,6 +15,8 @@ cache = Cache(app.server, config={
 
     # should be equal to maximum number of users on the app at a single time
     'CACHE_THRESHOLD': 100,
+    # The default timeout that is used if no timeout is specified. Unit of time is seconds.
+    'CACHE_DEFAULT_TIMEOUT': 120,
 })
 
 
