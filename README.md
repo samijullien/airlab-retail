@@ -26,7 +26,16 @@ It was packaged using Docker 19.03.13 for easy setup and usage regardless of ope
 With Docker:
 
 	docker pull shubhaguha/retail:latest
-	docker run -ti --rm -p 8050:8050 shubhaguha/retail:latest
+	docker run -ti --rm --name retail-web -p 8050:8050 shubhaguha/retail:latest
+
+TODO: Simplify with Docker Compose
+
+	# external cache server
+	docker run -ti --rm --name retail-memcached -p 11211:11211 memcached
+	# network connecting these two running containers
+	docker network create retail-network
+	docker network connect retail-network retail-web
+	docker network connect retail-network retail-memcached
 
 Without Docker:
 
