@@ -99,8 +99,9 @@ class StoreEnv(Env):
             self.utility_function = utility_function
         self._updateEnv()
         for i in range(self._lead_time):
-            self._addStock((self.forecast.squeeze()
-                            * bucket_customers[i]).round())
+            units_to_order = torch.as_tensor(self.forecast.squeeze()
+                            * bucket_customers[i]).round().clamp(0, self._max_stock)
+            self._addStock(units_to_order)
 
     def reset(self):
         self._updateObs()
