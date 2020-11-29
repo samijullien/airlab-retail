@@ -2,7 +2,7 @@ FROM python:3.7 AS base
 
 # Install R system dependencies
 RUN apt-get update \
-    && apt-get install -y r-base r-base-dev libgsl-dev
+    && apt-get install -y r-base r-base-dev libgsl-dev libmemcached-dev
 
 # Install R dependencies
 RUN wget -P /tmp \

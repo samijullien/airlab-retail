@@ -21,6 +21,10 @@ This application was written using Python 3.7 and R, including the R package `co
 
 It was packaged using Docker 19.03.13 for easy setup and usage regardless of operating system.
 
+Memcached requires libmemcached. On Mac OS:
+
+	brew install libmemcached
+
 ## Usage
 
 With Docker:
