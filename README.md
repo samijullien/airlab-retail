@@ -21,12 +21,25 @@ This application was written using Python 3.7 and R, including the R package `co
 
 It was packaged using Docker 19.03.13 for easy setup and usage regardless of operating system.
 
+Memcached requires libmemcached. On Mac OS:
+
+	brew install libmemcached
+
 ## Usage
 
 With Docker:
 
 	docker pull shubhaguha/retail:latest
-	docker run -ti --rm -p 8050:8050 shubhaguha/retail:latest
+	docker run -ti --rm --name retail-web -p 8050:8050 shubhaguha/retail:latest
+
+TODO: Simplify with Docker Compose
+
+	# external cache server
+	docker run -ti --rm --name retail-memcached -p 11211:11211 memcached
+	# network connecting these two running containers
+	docker network create retail-network
+	docker network connect retail-network retail-web
+	docker network connect retail-network retail-memcached
 
 Without Docker:
 

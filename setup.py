@@ -10,6 +10,11 @@ REQUIRES = [
     "rlpyt",
     "rpy2",
     "torch==1.4.0",
+
+    # https://github.com/pallets/flask/issues/1106#issuecomment-67360359
+    "flask>=0.10.1",
+    "flask-caching",
+    "pylibmc",
 ]
 
 

@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  retail-base:
+    build:
+      context: .
+      dockerfile: Dockerfile.base
+    image: shubhaguha/retail_base
+  retail-web:
+    build: .
+    image: shubhaguha/retail
+    ports:
+    - "8050:8050"
+    networks:
+      - retail-network
+    depends_on:
+      - retail-memcached
+      - retail-base
+    environment:
+      - MEMCACHED_SERVERS='("retail-memcached:11211", )'
+  retail-memcached:
+    image: memcached
+    ports:
+      - "11211:11211"
+    networks:
+      - retail-network
+
+networks:
+  retail-network:
