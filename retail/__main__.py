@@ -11,7 +11,7 @@ from .store import StoreFactory
 app = create_app()
 cache = Cache(app.server, config={
     'CACHE_TYPE': 'memcached',
-    'CACHE_MEMCACHED_SERVERS': ('retail-memcached:11211',),
+    'CACHE_MEMCACHED_SERVERS': os.getenv('MEMCACHED_SERVERS', ('localhost:11211',)),
 
     # The default timeout that is used if no timeout is specified. Unit of time is seconds.
     'CACHE_DEFAULT_TIMEOUT': 120,
