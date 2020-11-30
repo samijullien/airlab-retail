@@ -29,7 +29,7 @@ def serve_layout_func(img):
                         html.Th('Store characteristics', colSpan='4'),
                         html.Td('Seed'),
                         html.Td(dcc.Input(id="seed", type="number", placeholder="seed", min=1, max=100000, step=1)),
-                    ], style={'border-style': 'hidden'}),
+                    ]),
                     html.Tr([
                         html.Td('Customers'),
                         html.Td(dcc.Input(id="n_customers", type="number", value=500, min=0, max=2000, step=1)),
@@ -37,7 +37,7 @@ def serve_layout_func(img):
                         html.Td(dcc.Input(id="n_items", type="number", value=30, min=5, max=100, step=1)),
                         html.Td('Stock size'),
                         html.Td(dcc.Input(id="max_stock", type="number", value=600, min=0, max=2000, step=1)),
-                    ], style={'border-style': 'hidden'}),
+                    ]),
                     html.Tr([
                         html.Td('Horizon'),
                         html.Td(dcc.Input(id="horizon", type="number", value=91, min=40, max=1000, step=1)),
@@ -45,7 +45,7 @@ def serve_layout_func(img):
                         html.Td(dcc.Input(id="bias", type="number", value=0.0, min=-1, max=1, step=.01)),
                         html.Td('Variance'),
                         html.Td(dcc.Input(id="variance", type="number", value=0.0, min=0, max=1, step=.01)),
-                    ], style={'border-style': 'hidden'}),
+                    ]),
                     html.Tr([
                         html.Td('ON Leadtime'),
                         html.Td(dcc.Input(id="leadtime_fast", type="number", value=0, min=0, max=10, step=1)),
@@ -53,7 +53,7 @@ def serve_layout_func(img):
                         html.Td(dcc.Input(id="leadtime_long", type="number", value=1, min=1, max=10, step=1)),
                         html.Td('Buckets'),
                         html.Td(dcc.Input(id="daily_buckets", type="number", value=4, min=1, max=12, step=1)),
-                    ], style={'border-style': 'hidden'}),
+                    ]),
                 ]),
                 dcc.Markdown('''
                 #### Success metric
@@ -118,6 +118,7 @@ def serve_layout_func(img):
                         html.Td(dcc.Input(value='forecast*n_customers - stock', type='text', id='order')),
                     ], style={'border-style': 'hidden'}),
                 ]),
+                html.Br(),
                 html.Button('Order!', id='order_button'),
                 dcc.Graph(id='output2'),
             ], style={'marginLeft': '50%'})
