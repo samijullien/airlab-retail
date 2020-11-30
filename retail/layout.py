@@ -59,25 +59,31 @@ def serve_layout_func(img):
                 #### Success metric
                 Now, it is time to define your success metric. You can pick one and specify weights, or select "Custom" and enter your own metric - containing the letters "a" for availability, "s" for sales, and  "w" for waste.
                 '''),
-                html.Label('Utility function'),
+
                 dcc.Dropdown(id='utility_fun',
                              options=[
-                                {'label': 'Cobb-Douglas', 'value': 'cobbdouglas'},
-                                {'label': 'Log-linear', 'value': 'loglinear'},
-                                {'label': 'Linear', 'value': 'linear'},
-                                {'label': 'Custom', 'value': 'custom'}
+                                {'label': 'Cobb-Douglas utility function', 'value': 'cobbdouglas'},
+                                {'label': 'Log Linear utility function', 'value': 'loglinear'},
+                                {'label': 'Linear utility function', 'value': 'linear'},
+                                {'label': 'Custom utility function', 'value': 'custom'}
                              ],
                              value='cobbdouglas'),
-                dcc.Input(id="weight_waste", type="number",
-                          placeholder="Waste weight", min=0, max=3, step=.01, value=0.5),
-                dcc.Input(id="weight_sales", type="number",
-                          placeholder="Sales weight", min=0, max=3, step=.01, value=0.5),
-                dcc.Input(id="weight_availability", type="number",
-                          placeholder="Availability", min=0, max=3, step=.01, value=0.5),
-                html.Label('Custom utility'),
-                dcc.Input(type='text', id='utility',
-                          placeholder="Contains a,w and s"),
-                html.Label('Create store'),
+                html.Table(id='weights', children=[
+                    html.Tr([
+                        html.Td('Waste weight'),
+                        html.Td(dcc.Input(id="weight_waste", type="number", min=0, max=3, step=.01, value=0.5)),
+                        html.Td('Sales weight'),
+                        html.Td(dcc.Input(id="weight_sales", type="number", min=0, max=3, step=.01, value=0.5)),
+                        html.Td('Availability'),
+                        html.Td(dcc.Input(id="weight_availability", type="number", min=0, max=3, step=.01, value=0.5)),
+                    ], style={'border-style': 'hidden'}),
+                ]),
+                html.Table(id='custom_utility', children=[
+                    html.Tr([
+                        html.Td('Custom function definition'),
+                        html.Td(dcc.Input(id='utility', type='text', placeholder="Contains a, w, and s")),
+                    ], style={'border-style': 'hidden'}),
+                ]),
                 html.Button('Create store', id='create'),
                 dcc.Markdown('''
                 #### Items
