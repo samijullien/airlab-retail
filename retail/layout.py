@@ -97,7 +97,6 @@ def serve_layout_func(img):
                 #### Freshness level
                 Freshness represents how long your items can be stored before the expiration date. The fresher the item, the shorter the time it can be stored! Overall, you can see this as the difficulty level. Try moving the slider!
                 '''),
-                html.Label('Freshness level'),
                 dcc.Slider('freshness', min=1, max=100, value=1, marks={
                     1: 'Standard',
                     10: 'Fresher items',
@@ -113,12 +112,14 @@ def serve_layout_func(img):
                 - forecast, the purchase probability of each of those customers
                 - stock, the current stock (or inventory position) of items.
                 '''),
-                html.Label('Order input'),
-                dcc.Input(value='forecast*n_customers - stock',
-                          type='text', id='order'),
-                html.Label('Use your ordering policy'),
+                html.Table(children=[
+                    html.Tr([
+                        html.Td('Order input'),
+                        html.Td(dcc.Input(value='forecast*n_customers - stock', type='text', id='order')),
+                    ], style={'border-style': 'hidden'}),
+                ]),
                 html.Button('Order!', id='order_button'),
-                dcc.Graph(id='output2')
+                dcc.Graph(id='output2'),
             ], style={'marginLeft': '50%'})
         ])
 
