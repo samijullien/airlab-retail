@@ -25,6 +25,17 @@ def get_store(*args):
 
 
 @app.callback(
+    [Output('custom_utility', 'style'),
+    Output('weights', 'style')],
+    [Input('utility_fun', 'value')])
+def show_hide_element(utility_function):
+    if utility_function == 'custom':
+        return {'display': 'block'}, {'display': 'none'}
+    else:
+        return {'display': 'none'}, {'display': 'block'}
+
+
+@app.callback(
     Output('output', 'figure'),
     [Input('create', 'n_clicks'),
     Input('session-id', 'children')],

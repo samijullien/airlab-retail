@@ -24,82 +24,66 @@ def serve_layout_func(img):
                 The first step is to create your store. Enter below the characteristics to define your store.
                 This will also generate an item assortment, which can be replicated by entering a seed.
                 '''),
-                html.Label('Store characteristics'),
-                html.Div([
-                    html.Div([
-                        html.Span('Customers: '),
-                        dcc.Input(id="n_customers", type="number",
-                                  value=500, min=0, max=2000, step=1),
+                html.Table(title='Store characteristics', children=[
+                    html.Tr([
+                        html.Th('Store characteristics', colSpan='4'),
+                        html.Td('Seed'),
+                        html.Td(dcc.Input(id="seed", type="number", placeholder="seed", min=1, max=100000, step=1)),
                     ]),
-                    html.Div([
-                        html.Span('Items: '),
-                        dcc.Input(id="n_items", type="number",
-                                  value=30, min=5, max=100, step=1),
+                    html.Tr([
+                        html.Td('Customers'),
+                        html.Td(dcc.Input(id="n_customers", type="number", value=500, min=0, max=2000, step=1)),
+                        html.Td('Items'),
+                        html.Td(dcc.Input(id="n_items", type="number", value=30, min=5, max=100, step=1)),
+                        html.Td('Stock size'),
+                        html.Td(dcc.Input(id="max_stock", type="number", value=600, min=0, max=2000, step=1)),
                     ]),
-                    html.Div([
-                        html.Span('Stock size: '),
-                        dcc.Input(id="max_stock", type="number",
-                                  value=600, min=0, max=2000, step=1)
+                    html.Tr([
+                        html.Td('Horizon'),
+                        html.Td(dcc.Input(id="horizon", type="number", value=91, min=40, max=1000, step=1)),
+                        html.Td('Bias'),
+                        html.Td(dcc.Input(id="bias", type="number", value=0.0, min=-1, max=1, step=.01)),
+                        html.Td('Variance'),
+                        html.Td(dcc.Input(id="variance", type="number", value=0.0, min=0, max=1, step=.01)),
                     ]),
-                    html.Div([
-                        html.Span('Horizon: '),
-                        dcc.Input(id="horizon", type="number",
-                                  value=91, min=40, max=1000, step=1),
+                    html.Tr([
+                        html.Td('ON Leadtime'),
+                        html.Td(dcc.Input(id="leadtime_fast", type="number", value=0, min=0, max=10, step=1)),
+                        html.Td('ID Leadtime'),
+                        html.Td(dcc.Input(id="leadtime_long", type="number", value=1, min=1, max=10, step=1)),
+                        html.Td('Buckets'),
+                        html.Td(dcc.Input(id="daily_buckets", type="number", value=4, min=1, max=12, step=1)),
                     ]),
-                    html.Div([
-                        html.Span('Bias: '),
-                        dcc.Input(id="bias", type="number",
-                                  value=0.0, min=-1, max=1, step=.01),
-                    ]),
-                    html.Div([
-                        html.Span('Variance: '),
-                        dcc.Input(id="variance", type="number",
-                                  value=0.0, min=0, max=1, step=.01),
-                    ]),
-                    html.Div([
-                        html.Span('ON Leadtime: '),
-                        dcc.Input(id="leadtime_fast", type="number",
-                                  value=0, min=0, max=10, step=1),
-                    ]),
-                    html.Div([
-                        html.Span('ID Leadtime: '),
-                        dcc.Input(id="leadtime_long", type="number",
-                                  value=1, min=1, max=10, step=1),
-                    ]),
-                    html.Div([
-                        html.Span('Buckets: '),
-                        dcc.Input(id="daily_buckets", type="number",
-                                  value=4, min=1, max=12, step=1),
-                    ]),
-                    html.Div([
-                        html.Span('Seed: '),
-                        dcc.Input(id="seed", type="number",
-                                  placeholder="seed", min=1, max=100000, step=1),
-                    ])
-                ], style={'columnCount': 5}),
+                ]),
                 dcc.Markdown('''
                 #### Success metric
                 Now, it is time to define your success metric. You can pick one and specify weights, or select "Custom" and enter your own metric - containing the letters "a" for availability, "s" for sales, and  "w" for waste.
                 '''),
-                html.Label('Utility function'),
+
                 dcc.Dropdown(id='utility_fun',
                              options=[
-                                {'label': 'Cobb-Douglas', 'value': 'cobbdouglas'},
-                                {'label': 'Log-linear', 'value': 'loglinear'},
-                                {'label': 'Linear', 'value': 'linear'},
-                                {'label': 'Custom', 'value': 'custom'}
+                                {'label': 'Cobb-Douglas utility function', 'value': 'cobbdouglas'},
+                                {'label': 'Log Linear utility function', 'value': 'loglinear'},
+                                {'label': 'Linear utility function', 'value': 'linear'},
+                                {'label': 'Custom utility function', 'value': 'custom'}
                              ],
                              value='cobbdouglas'),
-                dcc.Input(id="weight_waste", type="number",
-                          placeholder="Waste weight", min=0, max=3, step=.01, value=0.5),
-                dcc.Input(id="weight_sales", type="number",
-                          placeholder="Sales weight", min=0, max=3, step=.01, value=0.5),
-                dcc.Input(id="weight_availability", type="number",
-                          placeholder="Availability", min=0, max=3, step=.01, value=0.5),
-                html.Label('Custom utility'),
-                dcc.Input(type='text', id='utility',
-                          placeholder="Contains a,w and s"),
-                html.Label('Create store'),
+                html.Table(id='weights', children=[
+                    html.Tr([
+                        html.Td('Waste weight'),
+                        html.Td(dcc.Input(id="weight_waste", type="number", min=0, max=3, step=.01, value=0.5)),
+                        html.Td('Sales weight'),
+                        html.Td(dcc.Input(id="weight_sales", type="number", min=0, max=3, step=.01, value=0.5)),
+                        html.Td('Availability'),
+                        html.Td(dcc.Input(id="weight_availability", type="number", min=0, max=3, step=.01, value=0.5)),
+                    ], style={'border-style': 'hidden'}),
+                ]),
+                html.Table(id='custom_utility', children=[
+                    html.Tr([
+                        html.Td('Custom function definition'),
+                        html.Td(dcc.Input(id='utility', type='text', placeholder="Contains a, w, and s")),
+                    ], style={'border-style': 'hidden'}),
+                ]),
                 html.Button('Create store', id='create'),
                 dcc.Markdown('''
                 #### Items
@@ -113,7 +97,6 @@ def serve_layout_func(img):
                 #### Freshness level
                 Freshness represents how long your items can be stored before the expiration date. The fresher the item, the shorter the time it can be stored! Overall, you can see this as the difficulty level. Try moving the slider!
                 '''),
-                html.Label('Freshness level'),
                 dcc.Slider('freshness', min=1, max=100, value=1, marks={
                     1: 'Standard',
                     10: 'Fresher items',
@@ -129,12 +112,15 @@ def serve_layout_func(img):
                 - forecast, the purchase probability of each of those customers
                 - stock, the current stock (or inventory position) of items.
                 '''),
-                html.Label('Order input'),
-                dcc.Input(value='forecast*n_customers - stock',
-                          type='text', id='order'),
-                html.Label('Use your ordering policy'),
+                html.Table(children=[
+                    html.Tr([
+                        html.Td('Order input'),
+                        html.Td(dcc.Input(value='forecast*n_customers - stock', type='text', id='order')),
+                    ], style={'border-style': 'hidden'}),
+                ]),
+                html.Br(),
                 html.Button('Order!', id='order_button'),
-                dcc.Graph(id='output2')
+                dcc.Graph(id='output2'),
             ], style={'marginLeft': '50%'})
         ])
 
