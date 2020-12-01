@@ -4,6 +4,7 @@ from setuptools import setup, find_packages
 
 REQUIRES = [
     "dash",
+    "dash-bootstrap-components",
     "jupyter==1.0.0",
     "numpy",
     "pandas==0.25.1",

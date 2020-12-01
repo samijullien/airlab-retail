@@ -1,4 +1,5 @@
 import dash
+import dash_bootstrap_components as dbc
 
 from .retail_traj_info import RetailTrajInfo
 from .layout import serve_layout_func
@@ -10,6 +11,8 @@ def create_app():
         'https://codepen.io/chriddyp/pen/bWLwgP.css',
         # Loading screen CSS
         'https://codepen.io/chriddyp/pen/brPBPO.css',
+        # Bootstrap CSS
+        dbc.themes.BOOTSTRAP,
     ]
 
     app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
