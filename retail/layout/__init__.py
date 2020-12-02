@@ -13,7 +13,7 @@ def serve_layout_func(img):
             html.Div(session_id, id='session-id', style={'display': 'none'}),
             html.Div([
                 html.H1(children='RetaiL Store Generator and Management'),
-                html.Img(src=img, style={'height': '35%', 'width': '35%', 'float': 'right'}),
+                html.Img(src=img, style={'width': 300, 'float': 'right'}),
             ], style={'columnCount': 2}),
             dcc.Tabs([
                 dcc.Tab([
