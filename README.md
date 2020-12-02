@@ -63,6 +63,8 @@ View the grocery store simulation in your web browser at <http://localhost:8050/
 
 ## Development
 
+### Build
+
 To increment a version:
 
 - Update the version in [setup.py](setup.py).
@@ -74,3 +76,19 @@ Docker commands:
 	docker build . -t shubhaguha/retail:${VERSION} -t shubhaguha/retail:latest
 	docker push shubhaguha/retail:${VERSION}
 	docker push shubhaguha/retail:latest
+
+### Deploy
+
+This application is deployed in Microsoft Azure using Container Groups.
+
+To deploy:
+
+	./deploy/script.sh create
+
+To check deployment status:
+
+	./deploy/script.sh show
+
+To view logs:
+
+	./deploy/script.sh logs

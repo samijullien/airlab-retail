@@ -1,0 +1,31 @@
+apiVersion: 2019-12-01
+location: eastus
+name: retailContainerGroup
+properties:
+  containers:
+  - name: retail-app
+    properties:
+      image: shubhaguha/retail:0.2.2
+      resources:
+        requests:
+          cpu: 1
+          memoryInGb: 1
+      ports:
+      - port: 8050
+  - name: retail-memcached
+    properties:
+      image: memcached:latest
+      resources:
+        requests:
+          cpu: 1
+          memoryInGb: 1.5
+      ports:
+      - port: 11211
+  osType: Linux
+  ipAddress:
+    dnsNameLabel: airlab-retail
+    type: Public
+    ports:
+    - protocol: tcp
+      port: 8050
+type: Microsoft.ContainerInstance/containerGroups
