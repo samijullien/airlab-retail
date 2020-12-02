@@ -5,13 +5,13 @@ properties:
   containers:
   - name: retail-app
     properties:
-      image: shubhaguha/retail:0.2.2
+      image: shubhaguha/retail:1.0.0
       resources:
         requests:
           cpu: 1
           memoryInGb: 1
       ports:
-      - port: 8050
+      - port: 80
   - name: retail-memcached
     properties:
       image: memcached:latest
@@ -27,5 +27,5 @@ properties:
     type: Public
     ports:
     - protocol: tcp
-      port: 8050
+      port: 80
 type: Microsoft.ContainerInstance/containerGroups
