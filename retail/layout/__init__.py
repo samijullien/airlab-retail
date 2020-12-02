@@ -26,9 +26,9 @@ def serve_layout_func(img):
                         '''),
                         html.H3('Store creation'),
                         dcc.Markdown('''
-                                The first step is to create your store. Enter below the characteristics to define your store.
-                                This will also generate an item assortment, which can be replicated by entering a seed.
-                                '''),
+                        The first step is to create your store. Enter below the characteristics to define your store.
+                        This will also generate an item assortment, which can be replicated by entering a seed.
+                        '''),
                         html.Table(title='Store characteristics', children=[
                             html.Tr([
                                 html.Th('Store characteristics',
@@ -71,8 +71,8 @@ def serve_layout_func(img):
                         ]),
                         html.H3('Success metric'),
                         dcc.Markdown('''
-                                Now, it is time to define your success metric. You can pick one and specify weights, or select "Custom" and enter your own metric - containing the letters "a" for availability, "s" for sales, and  "w" for waste.
-                                '''),
+                        Now, it is time to define your success metric. You can pick one and specify weights, or select "Custom" and enter your own metric - containing the letters "a" for availability, "s" for sales, and  "w" for waste.
+                        '''),
                         dcc.Dropdown(id='utility_fun',
                                      options=[
                                          {'label': 'Cobb-Douglas utility function',
