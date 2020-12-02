@@ -1,14 +1,15 @@
 import uuid
 
-import dash_html_components as html
 import dash_core_components as dcc
+import dash_bootstrap_components as dbc
+import dash_html_components as html
 
 
 def serve_layout_func(img):
     session_id = str(uuid.uuid4())
 
     def _serve_layout():
-        return html.Div([
+        return dbc.Container([
             html.Div(session_id, id='session-id', style={'display': 'none'}),
             html.Div([
                 html.H1(children='RetaiL Store Generator and Management'),
