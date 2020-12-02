@@ -27,21 +27,25 @@ Memcached requires libmemcached. On Mac OS:
 
 ## Usage
 
-With Docker:
+With Docker Compose:
 
+	docker-compose up
+
+With Docker but no Docker Compose:
+
+	# web app
 	docker pull shubhaguha/retail:latest
 	docker run -ti --rm --name retail-web -p 8050:8050 shubhaguha/retail:latest
 
-TODO: Simplify with Docker Compose
-
 	# external cache server
 	docker run -ti --rm --name retail-memcached -p 11211:11211 memcached
+
 	# network connecting these two running containers
 	docker network create retail-network
 	docker network connect retail-network retail-web
 	docker network connect retail-network retail-memcached
 
-Without Docker:
+Without Docker or Docker Compose:
 
 	# Checkout this git repository
 	git clone https://github.com/samijullien/airlab-retail.git
