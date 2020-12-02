@@ -27,6 +27,10 @@ Memcached requires libmemcached. On Mac OS:
 
 ## Usage
 
+You can visit the running app at: <http://airlab-retail.northeurope.azurecontainer.io/>
+
+### Local Development Server
+
 With Docker Compose:
 
 	docker-compose up
@@ -35,7 +39,7 @@ With Docker but no Docker Compose:
 
 	# web app
 	docker pull shubhaguha/retail:latest
-	docker run -ti --rm --name retail-web -p 8050:8050 shubhaguha/retail:latest
+	docker run -ti --rm --name retail-web -p 80:80 shubhaguha/retail:latest
 
 	# external cache server
 	docker run -ti --rm --name retail-memcached -p 11211:11211 memcached

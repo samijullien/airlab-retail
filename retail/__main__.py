@@ -9,7 +9,8 @@ from .store import StoreFactory
 
 
 app = create_app()
-cache = Cache(app.server, config={
+server = app.server
+cache = Cache(server, config={
     'CACHE_TYPE': 'memcached',
     'CACHE_MEMCACHED_SERVERS': os.getenv('MEMCACHED_SERVERS', ('localhost:11211',)),
 

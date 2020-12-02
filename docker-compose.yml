@@ -10,7 +10,7 @@ services:
     build: .
     image: shubhaguha/retail
     ports:
-    - "8050:8050"
+    - "80:80"
     networks:
       - retail-network
     depends_on:
@@ -20,8 +20,6 @@ services:
       - MEMCACHED_SERVERS='("retail-memcached:11211", )'
   retail-memcached:
     image: memcached
-    ports:
-      - "11211:11211"
     networks:
       - retail-network
 
