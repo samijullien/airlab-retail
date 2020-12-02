@@ -4,7 +4,7 @@ CMD="$1"
 
 if [[ $CMD == "create" ]]; then
     # Deploy the container group
-    az container create --resource-group airlab --file $PWD/azure_container_group.yaml
+    az container create --resource-group airlab --file $(dirname $0)/azure_container_group.yaml
 elif [[ $CMD == "show" ]]; then
     # View deployment state
     az container show --resource-group airlab --name retailContainerGroup --output table
