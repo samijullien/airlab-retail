@@ -3,13 +3,16 @@ location: eastus
 name: retailContainerGroup
 properties:
   containers:
-  - name: retail-app
+  - name: retail-web
     properties:
       image: shubhaguha/retail:1.0.0
       resources:
         requests:
           cpu: 1
-          memoryInGb: 1
+          memoryInGb: 1.5
+        limits:
+          cpu: 2
+          memoryInGb: 3
       ports:
       - port: 80
   - name: retail-memcached
@@ -19,6 +22,9 @@ properties:
         requests:
           cpu: 1
           memoryInGb: 1.5
+        limits:
+          cpu: 1
+          memoryInGb: 3
       ports:
       - port: 11211
   osType: Linux

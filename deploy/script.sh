@@ -10,7 +10,10 @@ elif [[ $CMD == "show" ]]; then
     az container show --resource-group airlab --name retailContainerGroup --output table
 elif [[ $CMD == "logs" ]]; then
     # View container logs
-    az container logs --resource-group airlab --name retailContainerGroup --container-name retail-app
+    az container logs --resource-group airlab --name retailContainerGroup --container-name retail-web
+elif [[ $CMD == "delete" ]]; then
+    # Delete the container group
+    az container delete --resource-group airlab --name retailContainerGroup
 else
     echo "Unknown command '$1'"
 fi
