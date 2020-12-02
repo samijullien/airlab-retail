@@ -1,3 +1,5 @@
+import logging
+
 import dash
 
 from .retail_traj_info import RetailTrajInfo
@@ -5,14 +7,17 @@ from .layout import serve_layout_func
 
 
 def create_app():
-    external_stylesheets = [
+    # Initialize logging
+    logging.basicConfig(level=logging.INFO, format='[%(asctime)s] [%(levelname)s] %(message)s')
+    logging.info('Initialized logging')
+
+    # Initialize app with external stylesheets
+    app = dash.Dash(__name__, external_stylesheets=[
         # Dash CSS
         'https://codepen.io/chriddyp/pen/bWLwgP.css',
         # Loading screen CSS
         'https://codepen.io/chriddyp/pen/brPBPO.css',
-    ]
-
-    app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+    ])
     app.config.suppress_callback_exceptions = True
 
     # Set page title

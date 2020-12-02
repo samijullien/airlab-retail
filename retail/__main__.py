@@ -1,3 +1,4 @@
+import logging
 import os
 
 import dash
@@ -111,3 +112,9 @@ def update_output_order(n_clicks, session_id, n_customers, n_items, max_stock,
 
 if __name__ == '__main__':
     app.run_server(host='0.0.0.0', debug=True)
+
+
+if __name__ != '__main__':
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)

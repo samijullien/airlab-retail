@@ -9,7 +9,7 @@ REQUIRES = [
     "numpy",
     "pandas==0.25.1",
     "rlpyt",
-    "rpy2",
+    "rpy2==3.3.6",
     "torch==1.4.0",
 
     # https://github.com/pallets/flask/issues/1106#issuecomment-67360359
