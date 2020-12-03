@@ -26,7 +26,7 @@ DEPENDENCY_LINKS = [
 
 setup(
     name="airlab-retail",
-    version="1.0.0",
+    version="1.0.1",
     description="Library to simulate the ordering policy of a grocery store in order to reduce waste",
     long_description=open("README.md").read(),
     author="Sami Jullien",
