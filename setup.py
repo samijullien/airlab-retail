@@ -8,14 +8,10 @@ REQUIRES = [
     "jupyter==1.0.0",
     "numpy",
     "pandas==0.25.1",
+    "pymemcache==3.4.0",
     "rlpyt",
-    "rpy2",
+    "rpy2==3.3.6",
     "torch==1.4.0",
-
-    # https://github.com/pallets/flask/issues/1106#issuecomment-67360359
-    "flask>=0.10.1",
-    "flask-caching",
-    "pylibmc",
 ]
 
 

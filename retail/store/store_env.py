@@ -1,4 +1,5 @@
 from collections import namedtuple
+import logging
 from math import pi
 import numpy as np
 
@@ -47,6 +48,7 @@ class StoreEnv(Env):
         symmetric_action_space=False,
     ):
         save__init__args(locals(), underscore=True)
+        logging.info("Creating new StoreEnv")
 
         self.bucket_customers = bucket_customers
 

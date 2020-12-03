@@ -17,7 +17,7 @@ services:
       - retail-memcached
       - retail-base
     environment:
-      - MEMCACHED_SERVERS='("retail-memcached:11211", )'
+      - MEMCACHED_SERVER=retail-memcached
   retail-memcached:
     image: memcached
     networks:

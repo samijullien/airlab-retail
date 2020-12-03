@@ -10,4 +10,4 @@ RUN python setup.py install \
 
 # Run server
 EXPOSE 80
-CMD [ "gunicorn", "retail.__main__:server", "-b", ":80", "-w", "5" ]
+ENTRYPOINT [ "gunicorn", "retail.__main__:server", "--bind", ":80", "--workers", "5", "--log-level", "info" ]

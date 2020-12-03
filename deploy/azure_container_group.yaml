@@ -4,7 +4,7 @@ properties:
   containers:
   - name: retail-web
     properties:
-      image: shubhaguha/retail:1.0.1
+      image: shubhaguha/retail:1.0.2
       resources:
         requests:
           cpu: 1
@@ -14,6 +14,9 @@ properties:
           memoryInGb: 3
       ports:
       - port: 80
+      environmentVariables:
+      - name: MEMCACHED_SERVER
+        value: retail-memcached
   - name: retail-memcached
     properties:
       image: memcached:latest
