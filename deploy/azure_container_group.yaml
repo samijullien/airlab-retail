@@ -16,7 +16,7 @@ properties:
       - port: 80
       environmentVariables:
       - name: MEMCACHED_SERVER
-        value: retail-memcached
+        value: localhost
   - name: retail-memcached
     properties:
       image: memcached:latest
