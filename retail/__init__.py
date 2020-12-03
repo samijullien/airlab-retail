@@ -15,7 +15,11 @@ def create_app():
     app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
     app.config.suppress_callback_exceptions = True
 
-    img = app.get_asset_url('grocery-beta.png')
-    app.layout = serve_layout_func(img)  # should be a function, not an object
+    # Set page title
+    app.title = 'RetaiL'
+
+    # As a function, the layout can be reloaded for each individual user,
+    # allowing us to embed a hidden user-specific session ID in the HTML
+    app.layout = serve_layout_func(app.get_asset_url('grocery-beta.png'))
 
     return app
