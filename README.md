@@ -4,16 +4,19 @@
 
 __RetaiL__ is a library aimed at improving experimentation in a grocery store context, to reduce generated waste. We think it is a great addition for both reinforcement learning and supply chain researchers, but also to data scientists working in retail environments.
 
+We presented part of RetaiL as a demo for NeurIPS 2020.
+
 We design RetaiL around two main components: 
 
  * [Item Generation](https://github.com/samijullien/airlab-retail/tree/master/retail/item_generation) contains the item Generation, scripted in R.
  * [Store environment](https://github.com/samijullien/airlab-retail/tree/master/retail/retail.py) 
 
-We additionally provide three usage examples of RetaiL:
+We additionally provide four usage examples of RetaiL:
 
- * [Transporation cost impact on marginal ordering cost](Transportation_cost.ipynb)
- * [Daily customer distribution impact on ordering policy performance](Intraday_dist_impact.ipynb)
- * [Risk assesment of an ordering policy](cvar_computation.ipynb)
+ * [Experiments showing performance of classical heuristics and imitation learning](notebooks/Experiments.ipynb)
+ * [Transporation cost impact on marginal ordering cost](notebooks/Transportation_cost.ipynb)
+ * [Daily customer distribution impact on ordering policy performance](notebooks/Intraday_dist_impact.ipynb)
+ * [Risk assesment of an ordering policy](notebooks/cvar_computation.ipynb)
 
 ## Requirements
 
