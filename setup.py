@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 
 REQUIRES = [
-    "dash==1.17.0",
+    "dash==2.15.0",
     "dash-bootstrap-components==0.10.7",
     "jupyter==1.0.0",
     "numpy",
